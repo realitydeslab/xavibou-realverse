@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" data-theme="overcast">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ornithographic Study</title>
+  <meta name="description" content="A WebGPU murmuration rendered as chronophotographic flight traces, after Xavi Bou's Ornithographies.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.webgpu.js",
+        "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.webgpu.js",
+        "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.tsl.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="stage"></div>
+
+  <header class="plate plate--title">
+    <p class="kicker">Ornithographic study&nbsp;&nbsp;Nº&nbsp;01</p>
+    <h1><em>Sturnus vulgaris</em>, at roost</h1>
+  </header>
+
+  <aside class="plate plate--meta" aria-label="Exposure data">
+    <dl>
+      <div><dt>Individuals</dt><dd id="meta-count">4 096</dd></div>
+      <div><dt>Exposure</dt><dd id="meta-exposure">1.3 s</dd></div>
+      <div><dt>Frames</dt><dd id="meta-frames">25 / s</dd></div>
+      <div><dt>Renderer</dt><dd>WebGPU <span id="meta-fps"></span></dd></div>
+    </dl>
+  </aside>
+
+  <nav class="plate plate--controls" aria-label="Controls">
+    <label class="control control--range">
+      <span class="control__name">Exposure</span>
+      <input id="exposure" type="range" min="2" max="64" step="1" value="40">
+      <span class="control__value" id="exposure-value">1.3 s</span>
+    </label>
+    <button id="shutter" class="control control--shutter" aria-pressed="false" title="Freeze the flock (Space)">
+      <span class="shutter-dot" aria-hidden="true"></span><span id="shutter-label">Shutter</span>
+    </button>
+    <button id="theme-btn" class="control" title="Sky (T)"><span class="control__name">Sky</span> <span id="theme">Overcast</span></button>
+    <button id="falcon-btn" class="control" title="Falcon (F): wild flight or follow the cursor"><span class="control__name">Falcon</span> <span id="falcon">Wild</span></button>
+    <button id="save" class="control" title="Save plate as PNG (S)">Save plate</button>
+  </nav>
+
+  <footer class="plate plate--credit">
+    <p>Frame-stacked flight traces, after Xavi Bou’s <em>Ornithographies</em>.</p>
+    <p class="hint">drag to orbit · space freezes the flock · h hides this text · g tunes</p>
+  </footer>
+
+  <div class="fallback" role="alert">
+    <p><em>This study needs WebGPU.</em></p>
+    <p>Open it in a recent Chrome, Edge, or Safari 26+.</p>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

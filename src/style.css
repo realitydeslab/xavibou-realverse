@@ -1,0 +1,225 @@
+:root {
+  --paper: #eceae4;
+  --ink: #15171a;
+  --ink-soft: rgba(21, 23, 26, 0.55);
+  --ink-faint: rgba(21, 23, 26, 0.22);
+  --accent: #b2432f; /* the one red dot: shutter */
+  --serif: 'Instrument Serif', 'Times New Roman', serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --gutter: clamp(16px, 3.2vw, 44px);
+}
+
+:root[data-theme='dusk'] {
+  --ink: #f3ede4;
+  --ink-soft: rgba(243, 237, 228, 0.62);
+  --ink-faint: rgba(243, 237, 228, 0.25);
+}
+
+:root[data-theme='night'] {
+  --paper: #05070b;
+  --ink: #d9e2ef;
+  --ink-soft: rgba(217, 226, 239, 0.55);
+  --ink-faint: rgba(217, 226, 239, 0.2);
+  --accent: #e0775e;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+
+#stage, #stage canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+.plate {
+  position: fixed;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 1.4s ease, transform 1.4s ease, color 0.8s ease;
+  pointer-events: none;
+}
+.ready .plate { opacity: 1; transform: none; }
+.ready .plate--meta { transition-delay: 0.25s; }
+.ready .plate--controls { transition-delay: 0.5s; }
+.ready .plate--credit { transition-delay: 0.75s; }
+.hide-ui .plate { opacity: 0 !important; pointer-events: none !important; }
+
+/* Title — top left, like a print label */
+.plate--title { top: var(--gutter); left: var(--gutter); }
+.kicker {
+  margin: 0 0 0.6rem;
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+h1 {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(28px, 3.4vw, 46px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+h1 em { font-style: italic; }
+
+/* Exposure data — top right, EXIF-like */
+.plate--meta { top: var(--gutter); right: var(--gutter); }
+.plate--meta dl {
+  margin: 0;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+}
+.plate--meta dl > div { display: flex; justify-content: flex-end; gap: 1.2rem; }
+.plate--meta dt { color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.2em; }
+.plate--meta dd { margin: 0; min-width: 7.5ch; text-align: right; font-variant-numeric: tabular-nums; }
+#meta-fps { color: var(--ink-soft); }
+
+/* Controls — bottom right, a single hairline row */
+.plate--controls {
+  right: var(--gutter);
+  bottom: var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 0;
+  pointer-events: auto;
+  border-top: 1px solid var(--ink-faint);
+  padding-top: 0.7rem;
+}
+
+.control {
+  appearance: none;
+  background: none;
+  border: 0;
+  color: var(--ink);
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.9rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  white-space: nowrap;
+  transition: color 0.3s ease, opacity 0.3s ease;
+}
+.control + .control { border-left: 1px solid var(--ink-faint); }
+.control:first-child { padding-left: 0; }
+.control:last-child { padding-right: 0; }
+.control__name { color: var(--ink-soft); }
+button.control:hover, button.control:focus-visible { color: var(--accent); outline: none; }
+
+.control--range { cursor: default; }
+.control__value { min-width: 4.2ch; text-align: right; font-variant-numeric: tabular-nums; }
+
+input[type='range'] {
+  appearance: none;
+  width: clamp(90px, 11vw, 150px);
+  height: 18px;
+  background: transparent;
+  cursor: ew-resize;
+}
+input[type='range']::-webkit-slider-runnable-track { height: 1px; background: var(--ink); }
+input[type='range']::-moz-range-track { height: 1px; background: var(--ink); }
+input[type='range']::-webkit-slider-thumb {
+  appearance: none;
+  width: 9px;
+  height: 9px;
+  margin-top: -4px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+}
+input[type='range']::-moz-range-thumb {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--paper); border: 1px solid var(--ink);
+}
+input[type='range']:focus-visible { outline: 1px dotted var(--ink-soft); outline-offset: 4px; }
+
+.shutter-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.control--shutter.is-on .shutter-dot { background: var(--accent); transform: scale(1.15); }
+.control--shutter.is-on { color: var(--accent); }
+
+/* Credit — bottom left */
+.plate--credit {
+  left: var(--gutter);
+  bottom: var(--gutter);
+  max-width: 34ch;
+  font-size: 11px;
+  line-height: 1.55;
+}
+.plate--credit p { margin: 0; }
+.plate--credit em { font-family: var(--serif); font-size: 14px; letter-spacing: 0.01em; }
+.hint { margin-top: 0.4rem !important; color: var(--ink-soft); font-size: 10px; letter-spacing: 0.04em; }
+
+/* Frozen: a thin frame appears, as if the plate had been exposed */
+body::after {
+  content: '';
+  position: fixed;
+  inset: calc(var(--gutter) * 0.45);
+  border: 1px solid var(--ink-faint);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+body.frozen::after { opacity: 1; }
+
+/* No WebGPU */
+.fallback {
+  display: none;
+  position: fixed;
+  inset: 0;
+  place-content: center;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  z-index: 3;
+}
+.fallback em { font-family: var(--serif); font-size: 28px; letter-spacing: 0; }
+.no-webgpu .fallback { display: grid; }
+.no-webgpu .plate { display: none; }
+
+@media (max-width: 760px) {
+  .plate--meta { display: none; }
+  .plate--credit { bottom: auto; top: calc(var(--gutter) + 5.2rem); }
+  .plate--credit .hint { display: none; }
+  .plate--controls {
+    left: var(--gutter);
+    right: var(--gutter);
+    flex-wrap: wrap;
+    row-gap: 0.4rem;
+  }
+  .control { padding: 0.35rem 0.6rem; }
+  .control--range { width: 100%; padding-left: 0; border-left: 0 !important; }
+  .control--range input { flex: 1; }
+  .control--range + .control { border-left: 0; padding-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plate { transition: none; transform: none; }
+}

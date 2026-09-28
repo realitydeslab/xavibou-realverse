@@ -1,0 +1,7 @@
+# Third-party reference footage, frames and derived comparison images:
+# local study material only — never commit or redistribute.
+reference/
+
+.DS_Store
+__pycache__/
+*.pyc
