@@ -1,6 +1,6 @@
 # Ornithographic Study — WebGPU murmuration
 
-**Live:** https://realitydeslab.github.io/xavibou-realverse/ (needs a WebGPU browser)
+**Live:** https://flock.reality.design/ (needs a WebGPU browser)
 
 A starling murmuration simulated on the GPU (Three.js `WebGPURenderer` + TSL
 compute shaders) and drawn as frame-stacked flight traces, after Xavi Bou's
